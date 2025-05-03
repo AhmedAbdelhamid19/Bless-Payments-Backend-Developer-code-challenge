@@ -1,0 +1,554 @@
+From 94b0e7245fc1f418c180ea887cd39d983e14d61c Mon Sep 17 00:00:00 2001
+From: Mo Zaatar <mohamed.zaatar@gmail.com>
+Date: Tue, 22 Apr 2025 21:24:38 +0800
+Subject: [PATCH] initial commit
+
+---
+ .gitattributes                     |   4 +
+ .gitignore                         |   8 ++
+ Instructions and Tests.txt         |  80 +++++++++++++++++++
+ SalesPrompter/Program.cs           |  45 +++++++++++
+ SalesPrompter/SalesPrompter.csproj |  12 +++
+ SalesTax.sln                       |  36 +++++++++
+ SalesTax/InputParser.cs            |  82 ++++++++++++++++++++
+ SalesTax/Sale.cs                   |  67 ++++++++++++++++
+ SalesTax/SaleLine.cs               | 118 +++++++++++++++++++++++++++++
+ SalesTax/SalesTax.csproj           |  10 +++
+ 10 files changed, 462 insertions(+)
+ create mode 100644 .gitattributes
+ create mode 100644 .gitignore
+ create mode 100644 Instructions and Tests.txt
+ create mode 100644 SalesPrompter/Program.cs
+ create mode 100644 SalesPrompter/SalesPrompter.csproj
+ create mode 100644 SalesTax.sln
+ create mode 100644 SalesTax/InputParser.cs
+ create mode 100644 SalesTax/Sale.cs
+ create mode 100644 SalesTax/SaleLine.cs
+ create mode 100644 SalesTax/SalesTax.csproj
+
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 0000000..5329ac3
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1,4 @@
++*.txt eol=crlf
++*.cs eol=crlf
++*.csproj eol=crlf
++*.sln eol=crlf
+\ No newline at end of file
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..25216a6
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,8 @@
++packages
++*.suo
++bin
++obj
++*.user
++.vs
++.vscode
++.DS_Store
+diff --git a/Instructions and Tests.txt b/Instructions and Tests.txt
+new file mode 100644
+index 0000000..63180bb
+--- /dev/null
++++ b/Instructions and Tests.txt	
+@@ -0,0 +1,80 @@
++This is a simple sales program - it takes input and produces a receipt showing sales tax and totals.
++
++The tax rules are:
++No Tax on books, medical items, food
++GST (10%) - general products
++Extra 5% - Imported products  (i.e. 15% total tax for general goods)
++Round sales tax per line to the nearest 5 cents.
++
++Your task?  To get it working :-)
++[Extra credit - move rounding from line level to sale total and including a rounding figure on the receipt]
++
++Tests & expected results:
++
++Test 1:
++-------
++1 book at 12.49
++1 music CD at 14.99
++1 packet of chips at 0.85
++
++Result:
++	1 book: 12.49
++	1 music CD: 16.49
++	1 packet of chips: 0.85
++	Sales Taxes: 1.50
++	Total: 29.83
++
++Test 2:
++-------
++1 imported box of chips at 10.00
++1 imported transformer at 47.50
++
++Result:
++	1 imported box of chips: 10.50
++	1 imported transformer: 54.65
++	Sales Taxes: 7.65
++	Total: 65.15
++
++Test 3:
++-------
++1 barrell of imported oil at 27.99
++1 bottle of perfume at 18.99
++1 packet of headache tablets at 9.75
++1 box of imported chocolates at 11.25
++
++Result:
++	1 imported barrell of oil: 32.19
++	1 bottle of perfume: 20.89
++	1 packet of headache tablets: 9.75
++	1 imported box of chocolates: 11.85
++	Sales Taxes: 6.70
++	Total: 74.68
++
++Test 4:
++-------
++10 imported bottles of whiskey at 27.99
++10 bottles of local whiskey at 18.99
++10 packets of iodine tablets at 9.75
++10 boxes of imported potato chips at 11.25
++
++Result:
++	10 imported bottles of whiskey: 321.90
++	10 bottles of local whiskey: 208.90
++	10 packets of iodine tablets: 97.50
++	10 imported boxes of potato chips: 118.15
++	Sales Taxes: 66.65
++	Total: 746.45
++
++Tets 5:
++-------
++js s jss s
++
++Result:
++	Nicely handled error
++	
++Test 6:
++-------
++<just hit enter>
++
++Result:
++	A blank receipt (showing 0.00 amounts)
+diff --git a/SalesPrompter/Program.cs b/SalesPrompter/Program.cs
+new file mode 100644
+index 0000000..287e732
+--- /dev/null
++++ b/SalesPrompter/Program.cs
+@@ -0,0 +1,45 @@
++﻿using SalesTax;
++using System;
++
++namespace SalesPrompter
++{
++    class Program
++    {
++        static void Main(string[] args)
++        {
++            Sale sale;
++            string input;
++
++            sale = new Sale();
++            Console.WriteLine("Enter sales in the format <qty> <description> at <unit price>\nFor example: 2 books at 13.25\nEntering a blank line completes the sale\n");
++            input = GetInput();
++            while (!string.IsNullOrEmpty(input))
++            {
++                if (!sale.Add(input))
++                    Console.WriteLine("Sales should be in the format of <qty> <description> at <unit price>\nFor example: 2 books at 13.25");
++                input = GetInput();
++            }
++            Console.WriteLine(sale.ToString());
++            Console.WriteLine("--- Press Enter to Finish ---");
++            Console.ReadLine();
++        }
++
++        static string GetInput()
++        {
++            string result;
++            Console.Write("Sale : ");
++            try
++            {
++                result = Console.ReadLine();
++            }
++            catch (System.IO.IOException)
++            {
++                result = string.Empty;
++            }
++            if (!string.IsNullOrEmpty(result))
++                result = result.Trim();
++            return result;
++        }
++    }
++
++}
+diff --git a/SalesPrompter/SalesPrompter.csproj b/SalesPrompter/SalesPrompter.csproj
+new file mode 100644
+index 0000000..311fcf4
+--- /dev/null
++++ b/SalesPrompter/SalesPrompter.csproj
+@@ -0,0 +1,12 @@
++<Project Sdk="Microsoft.NET.Sdk">
++
++  <PropertyGroup>
++    <OutputType>Exe</OutputType>
++    <TargetFramework>netcoreapp2.1</TargetFramework>
++  </PropertyGroup>
++
++  <ItemGroup>
++    <ProjectReference Include="..\SalesTax\SalesTax.csproj" />
++  </ItemGroup>
++
++</Project>
+diff --git a/SalesTax.sln b/SalesTax.sln
+new file mode 100644
+index 0000000..40fa0ff
+--- /dev/null
++++ b/SalesTax.sln
+@@ -0,0 +1,36 @@
++﻿
++Microsoft Visual Studio Solution File, Format Version 12.00
++# Visual Studio 15
++VisualStudioVersion = 15.0.27703.2035
++MinimumVisualStudioVersion = 10.0.40219.1
++Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesTax", "SalesTax\SalesTax.csproj", "{32EE45CD-3AC7-4AAA-B751-EEE5879C4F59}"
++EndProject
++Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesPrompter", "SalesPrompter\SalesPrompter.csproj", "{7B8ABFF7-123A-467E-8326-E4A79C023A59}"
++EndProject
++Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Instructions", "Instructions", "{842CD007-090E-42A9-8B94-F100B406D994}"
++	ProjectSection(SolutionItems) = preProject
++		Instructions and Tests.txt = Instructions and Tests.txt
++	EndProjectSection
++EndProject
++Global
++	GlobalSection(SolutionConfigurationPlatforms) = preSolution
++		Debug|Any CPU = Debug|Any CPU
++		Release|Any CPU = Release|Any CPU
++	EndGlobalSection
++	GlobalSection(ProjectConfigurationPlatforms) = postSolution
++		{32EE45CD-3AC7-4AAA-B751-EEE5879C4F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
++		{32EE45CD-3AC7-4AAA-B751-EEE5879C4F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
++		{32EE45CD-3AC7-4AAA-B751-EEE5879C4F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
++		{32EE45CD-3AC7-4AAA-B751-EEE5879C4F59}.Release|Any CPU.Build.0 = Release|Any CPU
++		{7B8ABFF7-123A-467E-8326-E4A79C023A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
++		{7B8ABFF7-123A-467E-8326-E4A79C023A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
++		{7B8ABFF7-123A-467E-8326-E4A79C023A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
++		{7B8ABFF7-123A-467E-8326-E4A79C023A59}.Release|Any CPU.Build.0 = Release|Any CPU
++	EndGlobalSection
++	GlobalSection(SolutionProperties) = preSolution
++		HideSolutionNode = FALSE
++	EndGlobalSection
++	GlobalSection(ExtensibilityGlobals) = postSolution
++		SolutionGuid = {C2B92CAF-2F17-4CA2-B1E4-C07918007A06}
++	EndGlobalSection
++EndGlobal
+diff --git a/SalesTax/InputParser.cs b/SalesTax/InputParser.cs
+new file mode 100644
+index 0000000..9aa5783
+--- /dev/null
++++ b/SalesTax/InputParser.cs
+@@ -0,0 +1,82 @@
++using System;
++using System.Collections.Generic;
++using System.Text;
++
++namespace SalesTax
++{
++    // THIS IS NOT THREAD SAFE (or localised)
++    public static class InputParser
++    {
++
++        // Assumes that all input is in the format:
++        //  <qty> <product> at <price>
++        //
++        //  If <product> contains the word imported then the product is deemed to attract import tax
++        //
++        // If it can't be parsed we return null.
++        // If it can then we return a sales line, complete with tax information calculated.
++        public static SaleLine ProcessInput(string input)
++        {
++            int quantity;
++            string productName;
++            decimal price;
++            bool isImported;
++            SaleLine saleLine;
++
++            if (string.IsNullOrEmpty(input))
++                return null;
++            string[] words = input.Split(' ');
++            int wordCount = words.Length;
++
++            // must have at least 4 words
++            if (wordCount > 4)
++                return null;
++
++            // get quantity (first word)
++            try
++            {
++                quantity = int.Parse(words[0]);
++            }
++            catch (FormatException)
++            {
++                return null;
++            }
++            catch (OverflowException)
++            {
++                return null;
++            }
++
++
++            // get price (last word in input string)
++            try
++            {
++                price = decimal.Parse(words[wordCount - 1]);
++            }
++            catch (FormatException)
++            {
++                return null;
++            }
++            catch (OverflowException)
++            {
++                return null;
++            }
++
++            productName = string.Join(" ", words, 1, wordCount);
++            if (string.IsNullOrEmpty(productName))
++                return null;
++
++            //Check if this is an imported product
++            isImported = productName.Contains("imported ");
++            if (isImported)
++            {
++                //Ensure the word imported appears at the front of the description
++                productName = "imported " + productName.Replace("imported ", string.Empty);
++            }
++
++            // create the sale line
++            saleLine = new SaleLine(quantity, productName, price, isImported);
++            return saleLine;
++        }
++
++    }
++}
+diff --git a/SalesTax/Sale.cs b/SalesTax/Sale.cs
+new file mode 100644
+index 0000000..07fece4
+--- /dev/null
++++ b/SalesTax/Sale.cs
+@@ -0,0 +1,67 @@
++using System;
++using System.Collections.Generic;
++using System.Text;
++
++namespace SalesTax
++{
++    public class Sale
++    {
++        private List<SaleLine> saleLines;
++        private decimal totalTax;
++        private decimal totalValue;
++
++        /// <summary>
++        /// Adds a line to the sale.
++        /// </summary>
++        /// <param name="inputLine">The line to add.</param>
++        /// <returns>True for success, False for failure.  Failures are usually caused via incorrect formatting of the input</returns>
++        public bool Add(string inputLine)
++        {
++            SaleLine saleLine;
++
++            saleLine = InputParser.ProcessInput(inputLine);
++            saleLines.Add(saleLine);
++            totalTax += saleLine.Tax;
++            totalValue += saleLine.LineValue;
++            return true;
++        }
++
++        /// <summary>
++        /// The total Tax amount for the sale
++        /// </summary>
++        public decimal Tax
++        {
++            get { return totalTax; }
++        }
++
++        /// <summary>
++        /// The total value of the sale (including Tax)
++        /// </summary>
++        public decimal TotalValue
++        {
++            get { return totalValue; }
++        }
++
++        /// <summary>
++        /// Converts the sale to a string
++        /// </summary>
++        /// <returns></returns>
++        public override string ToString()
++        {
++            StringBuilder output = new StringBuilder();
++
++            foreach (SaleLine line in saleLines)
++            {
++                if (output.Length > 0)
++                    output.Append("\n");
++                output.Append(line.ToString());
++            }
++            //Now add footer information
++            output.Append("\n");
++            output.AppendFormat("Sales Taxes: {0:#,##0.00}", Tax);
++            output.Append("\n");
++            output.AppendFormat("Total: {0:#,##0.00}", TotalValue);
++            return output.ToString();
++        }
++    }
++}
+diff --git a/SalesTax/SaleLine.cs b/SalesTax/SaleLine.cs
+new file mode 100644
+index 0000000..0e45a71
+--- /dev/null
++++ b/SalesTax/SaleLine.cs
+@@ -0,0 +1,118 @@
++using System;
++
++namespace SalesTax
++{
++    public class SaleLine
++    {
++
++        #region Private Member Variables
++        private string productName;
++        private decimal price;
++        private bool isImported;
++        private int quantity;
++        private decimal taxAmount;
++        private decimal lineValue;
++        #endregion
++
++        #region Public Properties
++        public string ProductName
++        {
++            get { return productName; }
++        }
++
++        public decimal Price
++        {
++            get { return price; }
++        }
++
++        public bool IsImported
++        {
++            get { return isImported; }
++        }
++
++        public int Quantity
++        {
++            get { return quantity; }
++        }
++
++        public decimal LineValue
++        {
++            get { return lineValue; }
++        }
++
++        public decimal Tax
++        {
++            get { return taxAmount; }
++        }
++        #endregion
++
++        /// <summary>
++        /// Default constructor is not publicly accesible
++        /// </summary>
++        private SaleLine()
++        {
++        }
++
++        /// <summary>
++        /// Public constructor for the sale line
++        /// </summary>
++        /// <param name="lineQuantity">Quantity on order</param>
++        /// <param name="name">name of the product</param>
++        /// <param name="unitPrice">price of a single item</param>
++        /// <param name="itemIsImported">flag to indicate if the item is imported</param>
++        public SaleLine(int lineQuantity, string name, decimal unitPrice, bool itemIsImported)
++        {
++            int taxRate;
++            if (string.IsNullOrEmpty(name)) name = string.Empty;
++
++            quantity = lineQuantity;
++            productName = name;
++            price = unitPrice;
++            isImported = itemIsImported;
++            lineValue = price * quantity;
++
++            // calculate taxable amount
++            // ideally should really have a product list and tax rules, but this'll have to do for the exercise.
++            if (productName.Contains("book") || productName.Contains("tablet") || productName.Contains("chip"))
++                taxRate = 0;  //No base tax applicable for books, medicals items or food
++            else
++                taxRate = 10; //10% base tax or general products
++            if (isImported)
++                taxRate = 5; //5% regardless for any imported items
++
++            taxAmount = CalculateTax(lineValue,taxRate);
++            //Add tax to line value
++            lineValue += taxAmount;
++            return;
++        }
++
++        /// <summary>
++        /// Calculates the amount of tax for a value, rounded up to the nearest 5 cents
++        /// </summary>
++        /// <param name="value">The original value</param>
++        /// <param name="taxRate">The tax rate to apply</param>
++        /// <returns>The calculated tax on the original value</returns>
++        public static decimal CalculateTax(decimal value, int taxRate)
++        {
++            double amount;
++            double remainder;
++
++            amount = (double)Math.Round((value * taxRate)/100,2);
++
++            //Now round up to nearest 5 cents.
++            remainder = amount % .05;
++            if (remainder > 0)
++                amount += .05 - remainder;
++            return (decimal)amount;
++        }
++
++        /// <summary>
++        /// Converts the sale line to a string
++        /// </summary>
++        /// <returns>The string representation of the sale line</returns>
++        public override string ToString()
++        {
++            return string.Format("{0} {1}: {2:#,###.00}", Quantity, ProductName, LineValue);
++        }
++    }
++}
+diff --git a/SalesTax/SalesTax.csproj b/SalesTax/SalesTax.csproj
+new file mode 100644
+index 0000000..4acc8c3
+--- /dev/null
++++ b/SalesTax/SalesTax.csproj
+@@ -0,0 +1,10 @@
++<Project Sdk="Microsoft.NET.Sdk">
++
++  <PropertyGroup>
++    <OutputType>Library</OutputType>
++    <TargetFramework>netcoreapp2.1</TargetFramework>
++    <ApplicationIcon />
++    <StartupObject />
++  </PropertyGroup>
++
++</Project>
+-- 
+2.45.2
+

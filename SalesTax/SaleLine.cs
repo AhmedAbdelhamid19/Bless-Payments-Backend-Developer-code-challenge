@@ -78,9 +78,7 @@ namespace SalesTax
             else
                 taxRate = 10; //10% base tax or general products
 
-            // This block incorrectly handles imported items by setting the taxRate to 5%.
-            // It should add 5% to the existing taxRate instead of overwriting it,
-            // as this may erase the 10% basic tax already applied to general items.
+            // It should add 5% to the existing taxRate instead of overwriting it.
             if (isImported)
                 taxRate += 5;   // <- this is the new line
                 //taxRate = 5;  // <- this is the old line
@@ -102,7 +100,8 @@ namespace SalesTax
             double amount;
             double remainder;
 
-            amount = (double) (value * taxRate) / 100 ;
+            // here i removed rounding before get nearest 5 cents, which can cause wrong result
+            amount = (double) (value * taxRate) / 100 ; 
             //Now round up to nearest 5 cents.
             remainder = amount % 0.05;
             if (remainder > 0)

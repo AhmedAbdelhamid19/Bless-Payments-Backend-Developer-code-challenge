@@ -4,8 +4,8 @@
     handled by making constructor that intilize the the field of the Sale class
 ## 2- Runtime error (out of range exception)
     solving out of range exception in class InputParse in Join function, by replace 
-    the fourth parameter (wordCount) with (wordCount - 2) so we only take the product name
-    and escape first and last word with refere to count and price
+    the fourth parameter (wordCount) with (wordCount - 3) so we only take the product name
+    and escape first and last word (quantity and price) and 'at' word with refere to count and price
 ## 3- Runtime error (null reference exception)
     the case that handle that the user should type at least 4 word, is handled in a wrong way
     in class InputParse

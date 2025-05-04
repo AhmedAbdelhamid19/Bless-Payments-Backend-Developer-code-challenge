@@ -34,3 +34,7 @@
 ## 10- check that the product contain book/books, chip/chips, tablet/tablets
     the original code check the word of the input as it's and it might written as
     Book, Chips or Tablet (in upper case) which may cause wrong result
+## 11- formating in ToString() functions
+    in Sale class and SaleLine class the original code format the number with floating point to one way, which 
+    may differ from one country to another (Germany, Uk ...etc.) and it's important topic in dotnet 
+    that should be handled correctly

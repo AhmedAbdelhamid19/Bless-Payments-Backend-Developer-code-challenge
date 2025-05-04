@@ -68,6 +68,12 @@ namespace SalesTax
                 return null;
             }
 
+            for (int i = 1; i < wordCount - 2; i++)
+            {
+                if (words[i].Equals("imported", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "imported";
+            }
+
 
             // solving out of range exception, by replace the fourth parameter with wordCount - 3
             // which lead to out of range exception, we should escape 3 words

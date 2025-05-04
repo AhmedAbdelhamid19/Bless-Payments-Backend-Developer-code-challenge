@@ -64,10 +64,18 @@ namespace SalesTax
 
                 if (words[i].Equals("book", StringComparison.OrdinalIgnoreCase))
                     words[i] = "book";
+                if (words[i].Equals("books", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "books";
+
                 if (words[i].Equals("tablet", StringComparison.OrdinalIgnoreCase))
                     words[i] = "tablet";
+                if (words[i].Equals("tablets", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "tablest";
+
                 if (words[i].Equals("chip", StringComparison.OrdinalIgnoreCase))
                     words[i] = "chip";
+                if (words[i].Equals("chips", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "chips";
             }
 
             ///<summary>

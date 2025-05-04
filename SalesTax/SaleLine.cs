@@ -78,11 +78,12 @@ namespace SalesTax
             else
                 taxRate = 10; //10% base tax or general products
 
-            // here the case that handle the imported items, handled in wrong way, it assign the taxRate to 5% and it should at 5% to total tax rate
-            // so it override the previous value of taxRate if it's generat item and should it was add by 10%.
+            // This block incorrectly handles imported items by setting the taxRate to 5%.
+            // It should add 5% to the existing taxRate instead of overwriting it,
+            // as this may erase the 10% basic tax already applied to general items.
             if (isImported)
-                taxRate += 5;   // <- t
-                //taxRate = 5;  //5% additional tax for imported items
+                taxRate += 5;   // <- this is the new line
+                //taxRate = 5;  // <- this is the old line
 
             taxAmount = CalculateTax(lineValue,taxRate);
             //Add tax to line value

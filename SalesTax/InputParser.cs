@@ -33,7 +33,11 @@ namespace SalesTax
             // one to quantity, ont to description, one to 'at' word, and one to price
             // 'if (wordCount > 4)' should replace by 'if (wordCount < 4)'
             if (wordCount < 4)
-                return null; 
+                return null;
+
+            // the second last word must be 'at'
+            if (words[wordCount - 2].ToLower() != "at")
+                return null;
 
             // get quantity (first word)
             try
@@ -65,9 +69,10 @@ namespace SalesTax
             }
 
 
-            // solving out of range exception, by replace the fourth parameter with wordCount - 2
-            // which lead to out of range exception, we should escape first and last word only
-            productName = string.Join(" ", words, 1, wordCount - 2);
+            // solving out of range exception, by replace the fourth parameter with wordCount - 3
+            // which lead to out of range exception, we should escape 3 words
+            // first (quantity) and last (price) word and word 'at' (second last word)
+            productName = string.Join(" ", words, 1, wordCount - 3);
             if (string.IsNullOrEmpty(productName))
                 return null;
 

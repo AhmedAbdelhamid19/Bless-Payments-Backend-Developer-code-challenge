@@ -16,7 +16,7 @@ namespace SalesPrompter
             while (!string.IsNullOrEmpty(input))
             {
                 if (!sale.Add(input))
-                    Console.WriteLine("Sales should be in the format of <qty> <description> at <unit price>\nFor example: 2 books at 13.25");
+                    Console.WriteLine($"Sales should be in the format of <qty> <description> at <unit price>\nFor example: 2 books at 13.25 \nyou typed {input}");
                 input = GetInput();
             }
             Console.WriteLine(sale.ToString());

@@ -11,7 +11,8 @@ namespace SalesTax
         private decimal totalValue;
 
 
-        // solve Null reference exception when user press Enter, so the saleLines is null and cause error in ToString() function
+        // solve Null reference exception when user press Enter,
+        // so the saleLines will be null and cause error in ToString() function
         public Sale()
         {
             saleLines = new List<SaleLine>();

@@ -20,70 +20,51 @@ namespace SalesTax
             int quantity;
             string productName;
             decimal price;
-            bool isImported;
+            bool isImported = false;
             SaleLine saleLine;
 
             if (string.IsNullOrEmpty(input))
                 return null;
-            string[] words = input.Split(' ');
+            string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             int wordCount = words.Length;
 
-            // must have at least 4 words <- was handled in a wrong way
-            // this line handle the case that the product should contain at lease 4 words 
-            // one to quantity, ont to description, one to 'at' word, and one to price
-            // 'if (wordCount > 4)' should replace by 'if (wordCount < 4)'
+            ///<summary>
+            /// must have at least 4 words <- was handled in a wrong way
+            /// quantity, 'at', price and item name
+            /// 'if (wordCount > 4)' should replace by 'if (wordCount < 4)'
+            ///</summary>
             if (wordCount < 4)
                 return null;
 
-            // the second last word must be 'at'
-            if (words[wordCount - 2].ToLower() != "at")
+            if (!string.Equals(words[wordCount - 2], "at", StringComparison.OrdinalIgnoreCase))
                 return null;
 
-            // get quantity (first word)
-            try
-            {
-                quantity = int.Parse(words[0]);
-            }
-            catch (FormatException)
-            {
+            // get and check the first word (quantity) and last word (price)
+            if (!int.TryParse(words[0], out quantity) || !decimal.TryParse(words[wordCount - 1], out price))
                 return null;
-            }
-            catch (OverflowException)
-            {
-                return null;
-            }
 
-
-            // get price (last word in input string)
-            try
-            {
-                price = decimal.Parse(words[wordCount - 1]);
-            }
-            catch (FormatException)
-            {
-                return null;
-            }
-            catch (OverflowException)
-            {
-                return null;
-            }
-
+            ///<summary>
+            /// Check and normalize to lowercase, replace ['Imported' ..etc] with 'imported' word
+            /// if a character typed in uppercase, by mistake by the user
+            ///</summary>
             for (int i = 1; i < wordCount - 2; i++)
             {
                 if (words[i].Equals("imported", StringComparison.OrdinalIgnoreCase))
+                {
                     words[i] = "imported";
+                    isImported = true;
+                    break;
+                }
             }
 
-
-            // solving out of range exception, by replace the fourth parameter with wordCount - 3
-            // which lead to out of range exception, we should escape 3 words
-            // first (quantity) and last (price) word and word 'at' (second last word)
+            ///<summary>
+            /// Avoid out of range exception by excluding [quantity, 'at', price] words (wordCount - 3) instead (wordCount)
+            ///</summary>
             productName = string.Join(" ", words, 1, wordCount - 3);
+
             if (string.IsNullOrEmpty(productName))
                 return null;
 
-            //Check if this is an imported product
-            isImported = productName.Contains("imported ");
             if (isImported)
             {
                 //Ensure the word imported appears at the front of the description

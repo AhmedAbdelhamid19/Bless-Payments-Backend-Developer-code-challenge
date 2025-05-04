@@ -29,8 +29,13 @@ namespace SalesTax
             SaleLine saleLine;
 
             saleLine = InputParser.ProcessInput(inputLine);
+
+            // here we got null it the format of the input is invalid, we got null reference exception
+            // becasue we access members of saleline which is null here
+            // eg. first word or last word isn't number, count of word less than 4 (<qty> <des> 'at' <unit price>)
             if (saleLine == null)
                 return false;
+
             saleLines.Add(saleLine);
             totalTax += saleLine.Tax;
             totalValue += saleLine.LineValue;

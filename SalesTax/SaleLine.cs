@@ -77,8 +77,12 @@ namespace SalesTax
                 taxRate = 0;  //No base tax applicable for books, medicals items or food
             else
                 taxRate = 10; //10% base tax or general products
+
+            // here the case that handle the imported items, handled in wrong way, it assign the taxRate to 5% and it should at 5% to total tax rate
+            // so it override the previous value of taxRate if it's generat item and should it was add by 10%.
             if (isImported)
-                taxRate = 5; //5% regardless for any imported items
+                taxRate += 5;   // <- t
+                //taxRate = 5;  //5% additional tax for imported items
 
             taxAmount = CalculateTax(lineValue,taxRate);
             //Add tax to line value

@@ -29,6 +29,8 @@ namespace SalesTax
             SaleLine saleLine;
 
             saleLine = InputParser.ProcessInput(inputLine);
+            if (saleLine == null)
+                return false;
             saleLines.Add(saleLine);
             totalTax += saleLine.Tax;
             totalValue += saleLine.LineValue;
@@ -43,7 +45,6 @@ namespace SalesTax
         {
             get { return totalTax; }
         }
-
 
         /// <summary>
         /// The total value of the sale (including Tax)

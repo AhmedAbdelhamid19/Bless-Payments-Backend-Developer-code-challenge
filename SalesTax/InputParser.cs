@@ -28,10 +28,10 @@ namespace SalesTax
             string[] words = input.Split(' ');
             int wordCount = words.Length;
 
-            // must have at least 4 words <- that's wrong
+            // must have at least 4 words <- was handled in a wrong way
             // this line handle the case that the product should contain at lease 4 words 
-            // one to quantity, ont to description, one to at , and one to price
-            // if (wordCount > 4) should replace by if (wordCount < 4)
+            // one to quantity, ont to description, one to 'at' word, and one to price
+            // 'if (wordCount > 4)' should replace by 'if (wordCount < 4)'
             if (wordCount < 4)
                 return null; 
 

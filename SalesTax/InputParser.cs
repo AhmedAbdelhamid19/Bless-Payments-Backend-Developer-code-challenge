@@ -61,7 +61,10 @@ namespace SalesTax
                 return null;
             }
 
-            productName = string.Join(" ", words, 1, wordCount);
+
+            // solving out of range exception, by replace the fourth parameter with wordCount - 2
+            // which lead to out of range exception, we should escape first and last word only
+            productName = string.Join(" ", words, 1, wordCount - 2);
             if (string.IsNullOrEmpty(productName))
                 return null;
 

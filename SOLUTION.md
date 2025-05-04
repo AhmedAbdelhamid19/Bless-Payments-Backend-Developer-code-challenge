@@ -21,6 +21,6 @@
     entirely with 5%, as this may erase the 10% basic tax already applied to general items
     which are not books, medical items or food
         this handled in SaleLine class 
-## 6- input format 
+## 6- user should type 'at' word before price
     handle that the input should contain 'at' word before price to correctly specify the price, it could 
     make problems if the user didn't type the price and the last word is number related to product name

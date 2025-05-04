@@ -31,9 +31,9 @@ namespace SalesTax
 
             saleLine = InputParser.ProcessInput(inputLine);
 
-            // here we got null it the format of the input is invalid, we got null reference exception
+            // here we got null reference exception if the format of the input is invalid and can't be processed,
             // becasue we access members of saleline which is null here
-            // eg. first word or last word isn't number, count of word less than 4 (<qty> <des> 'at' <unit price>)
+            // eg. first word or last word isn't number, count of word less than 4 (<qty> <des> 'at' <unit price>) ...etc.
             if (saleLine == null)
                 return false;
 

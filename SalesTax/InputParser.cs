@@ -36,6 +36,11 @@ namespace SalesTax
             if (wordCount < 4)
                 return null;
 
+            ///<summary>
+            /// if the second last word is not 'at' then it's invalid input
+            /// because the format is <qty> <product> at <price> and by logic
+            /// can't detect the price (may that number related to item name)
+            ///</summary>
             if (!string.Equals(words[wordCount - 2], "at", StringComparison.OrdinalIgnoreCase))
                 return null;
 
@@ -45,16 +50,24 @@ namespace SalesTax
 
             ///<summary>
             /// Check and normalize to lowercase, replace ['Imported' ..etc] with 'imported' word
-            /// if a character typed in uppercase, by mistake by the user
+            /// if a character typed in uppercase, by mistake by the user, and same for book, tablet, chip
+            /// , the same for book, tablet and chip
             ///</summary>
             for (int i = 1; i < wordCount - 2; i++)
             {
+
                 if (words[i].Equals("imported", StringComparison.OrdinalIgnoreCase))
                 {
                     words[i] = "imported";
                     isImported = true;
-                    break;
                 }
+
+                if (words[i].Equals("book", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "book";
+                if (words[i].Equals("tablet", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "tablet";
+                if (words[i].Equals("chip", StringComparison.OrdinalIgnoreCase))
+                    words[i] = "chip";
             }
 
             ///<summary>

@@ -102,12 +102,12 @@ namespace SalesTax
             double amount;
             double remainder;
 
-            amount = (double)Math.Round((value * taxRate)/100,2);
-
+            amount = (double) (value * taxRate) / 100 ;
             //Now round up to nearest 5 cents.
-            remainder = amount % .05;
+            remainder = amount % 0.05;
             if (remainder > 0)
-                amount += .05 - remainder;
+                amount += 0.05 - remainder;
+
             return (decimal)amount;
         }
 

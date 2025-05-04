@@ -24,3 +24,4 @@
 ## 6- user should type 'at' word before price
     handle that the input should contain 'at' word before price to correctly specify the price, it could 
     make problems if the user didn't type the price and the last word is number related to product name
+## 7- handle case when user type a character in uppercase in word 'imported' by mistake

@@ -10,6 +10,15 @@ namespace SalesTax
         private decimal totalTax;
         private decimal totalValue;
 
+
+        // solve Null reference exception when user press Enter, so the saleLines is null and cause error in ToString() function
+        public Sale()
+        {
+            saleLines = new List<SaleLine>();
+            totalTax = 0;
+            totalValue = 0;
+        }
+
         /// <summary>
         /// Adds a line to the sale.
         /// </summary>
@@ -26,6 +35,7 @@ namespace SalesTax
             return true;
         }
 
+
         /// <summary>
         /// The total Tax amount for the sale
         /// </summary>
@@ -34,6 +44,7 @@ namespace SalesTax
             get { return totalTax; }
         }
 
+
         /// <summary>
         /// The total value of the sale (including Tax)
         /// </summary>
@@ -41,6 +52,7 @@ namespace SalesTax
         {
             get { return totalValue; }
         }
+
 
         /// <summary>
         /// Converts the sale to a string

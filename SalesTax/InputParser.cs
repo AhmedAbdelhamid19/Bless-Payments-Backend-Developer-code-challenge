@@ -30,7 +30,7 @@ namespace SalesTax
 
             // must have at least 4 words
             if (wordCount > 4)
-                return null;
+                return null; 
 
             // get quantity (first word)
             try

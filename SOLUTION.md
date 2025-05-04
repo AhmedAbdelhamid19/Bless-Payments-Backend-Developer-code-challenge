@@ -32,3 +32,11 @@
         which if it's not converted, empty strings will be treated as product, and it's should be
         as it not product at all
     it handled by: string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+## 9- calculated tax in better way
+    in sime case tax could be wrong
+    eg. price 10.501 and tax rate = 10, in the provided code, calculated wrong result
+        the tax should be 1.06 and it's 1.05, and the reason is that it's rounded first 
+        before we get moduls of 0.05 and this could cause loosing 0.0001
+## 10- check that the product contain book, chips, tablet 
+    the original code check the word of the input as it's and it might written as
+    Book, Chips or Tablet which may cause wrong result

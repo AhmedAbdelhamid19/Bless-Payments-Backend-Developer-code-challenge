@@ -31,3 +31,4 @@
     eg. ['12', '','', '','at', '10'] should convert to ['12', '','', '','at', '10']
         which if it's not converted, empty strings will be treated as product, and it's should be
         as it not product at all
+    it handled by: string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);

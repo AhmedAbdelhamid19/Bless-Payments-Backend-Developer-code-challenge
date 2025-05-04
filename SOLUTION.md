@@ -25,3 +25,9 @@
     handle that the input should contain 'at' word before price to correctly specify the price, it could 
     make problems if the user didn't type the price and the last word is number related to product name
 ## 7- handle case when user type a character in uppercase in word 'imported' by mistake
+    for example we should treat 'Imported' like 'imported', in case if user typed it by mistake
+## 8- handle case when user click multiple enters 
+    this can cause unexpected result 
+    eg. ['12', '','', '','at', '10'] should convert to ['12', '','', '','at', '10']
+        which if it's not converted, empty strings will be treated as product, and it's should be
+        as it not product at all

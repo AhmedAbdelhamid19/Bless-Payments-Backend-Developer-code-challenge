@@ -1,5 +1,6 @@
 #                                                                 Errors Solved
 #                                                            _________________________
+
 ## 1- Runtime error if user press enter (null reference exception)
     handled by making constructor that intilize the the field of the Sale class
 ## 2- Runtime error (out of range exception)

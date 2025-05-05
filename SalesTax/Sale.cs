@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace SalesTax
@@ -9,10 +10,15 @@ namespace SalesTax
         private List<SaleLine> saleLines;
         private decimal totalTax;
         private decimal totalValue;
+        public double totalBeforeRounding = 0;
+        public double TotalTaxBeforeRounding = 0;
+        public double SaleLevelRounding = 0;
 
-
-        // solve Null reference exception when user press Enter,
-        // so the saleLines will be null and cause error in ToString() function
+        ///<summary>
+        /// ctor to solve Null reference exception when user press Enter,
+        /// without it and when user press Enter without type anything
+        /// so the saleLines will be null and cause error in ToString() function
+        ///</summary>
         public Sale()
         {
             saleLines = new List<SaleLine>();
@@ -31,15 +37,20 @@ namespace SalesTax
 
             saleLine = InputParser.ProcessInput(inputLine);
 
-            // here we got null reference exception if the format of the input is invalid and can't be processed,
-            // becasue we access members of saleline which is null here
-            // eg. first word or last word isn't number, count of word less than 4 (<qty> <des> 'at' <unit price>) ...etc.
+            /// <summary>
+            /// here we got null reference exception if the format of the input is invalid and can't be processed,
+            /// becasue we access members of saleline which is null here
+            /// eg. first word or last word isn't number, count of word less than 4 (<qty> <des> 'at' <unit price>) ...etc. 
+            /// </summary>
             if (saleLine == null)
                 return false;
 
             saleLines.Add(saleLine);
             totalTax += saleLine.Tax;
             totalValue += saleLine.LineValue;
+            totalBeforeRounding += saleLine.BeforeRounding;
+            TotalTaxBeforeRounding += saleLine.TaxBeforeRounding;
+            SaleLevelRounding = totalBeforeRounding + TotalTaxBeforeRounding + (TotalTaxBeforeRounding % 0.05 > 0 ? 0.05 - TotalTaxBeforeRounding % 0.05 : 0);
             return true;
         }
 
@@ -77,9 +88,9 @@ namespace SalesTax
             }
             //Now add footer information
             output.Append("\n");
-            output.AppendFormat("Sales Taxes: {0:#,##0.00}", Tax);
+            output.AppendLine($"Sales Taxes: {Tax.ToString("N2", CultureInfo.CurrentCulture)}");
             output.Append("\n");
-            output.AppendFormat("Total: {0:#,##0.00}", TotalValue);
+            output.Append($"Total: {TotalValue.ToString("N2", CultureInfo.CurrentCulture)}");
             return output.ToString();
         }
     }

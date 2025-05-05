@@ -26,6 +26,7 @@ namespace SalesPrompter
                 input = GetInput();
             }
             Console.WriteLine(sale.ToString());
+            Console.WriteLine($"Sale level rounding: {sale.SaleLevelRounding}");
             Console.WriteLine("--- Press Enter to Finish ---");
             Console.ReadLine();
         }

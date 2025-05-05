@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace SalesTax
 {
@@ -46,11 +47,37 @@ namespace SalesTax
         }
         #endregion
 
+        public double BeforeRounding = 0;
+        public double TaxBeforeRounding = 0;
+
         /// <summary>
         /// Default constructor is not publicly accesible
         /// </summary>
         private SaleLine()
         {
+        }
+
+        public int CalculateTaxRate(string productName, bool isImported)
+        {
+            int taxRate = 0;
+
+            if (isImported)
+                taxRate = 5;
+            else
+                taxRate = 0;
+
+            bool flag = false;
+            foreach (var word in InputParser.SpecialItems)
+            {
+                if (productName.Contains(word, StringComparison.OrdinalIgnoreCase))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag)
+                taxRate += 10;
+            return taxRate;
         }
 
         /// <summary>
@@ -73,17 +100,11 @@ namespace SalesTax
 
             // calculate taxable amount
             // ideally should really have a product list and tax rules, but this'll have to do for the exercise.
-            if (productName.Contains("book") || productName.Contains("tablet") || productName.Contains("chip"))
-                taxRate = 0;  //No base tax applicable for books, medicals items or food
-            else
-                taxRate = 10; //10% base tax or general products
 
-            // It should add 5% to the existing taxRate instead of overwriting it.
-            if (isImported)
-                taxRate += 5;   // <- this is the new line
-                //taxRate = 5;  // <- this is the old line
-
-            taxAmount = CalculateTax(lineValue,taxRate);
+            taxRate = CalculateTaxRate(productName, isImported);
+            taxAmount = CalculateTax(lineValue, taxRate);
+            BeforeRounding = (double) LineValue;
+            TaxBeforeRounding = (double) LineValue * taxRate / 100;
             //Add tax to line value
             lineValue += taxAmount;
             return;
@@ -101,7 +122,8 @@ namespace SalesTax
             double remainder;
 
             // here i removed rounding before get nearest 5 cents, which can cause wrong result
-            amount = (double) (value * taxRate) / 100 ; 
+            amount = (double) (value * taxRate) / 100 ;
+
             //Now round up to nearest 5 cents.
             remainder = amount % 0.05;
             if (remainder > 0)
@@ -116,7 +138,7 @@ namespace SalesTax
         /// <returns>The string representation of the sale line</returns>
         public override string ToString()
         {
-            return string.Format("{0} {1}: {2:#,###.00}", Quantity, ProductName, LineValue);
+            return $"{Quantity} {ProductName}: {LineValue.ToString("N2", CultureInfo.CurrentCulture)}";
         }
     }
 }

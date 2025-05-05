@@ -38,3 +38,6 @@
     in Sale class and SaleLine class the original code format the number with floating point to one way, which 
     may differ from one country to another (Germany, Uk ...etc.) and it's important topic in dotnet 
     that should be handled correctly
+## 12- adding Sale Level rounding instead of line level rounding as mentioned in the instructions and mention that in the receipt
+## 13- apply principles like single reponsiplity and open for extension (SOLID) for readable, Maintainable, Reusable and Testable
+    made in InputParser and SaleLine class

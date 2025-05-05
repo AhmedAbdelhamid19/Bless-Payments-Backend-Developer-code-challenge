@@ -103,6 +103,9 @@ namespace SalesTax
 
             if (isImported)
             {
+                // in this case productName will be 'imported' which isn't product name
+                if (wordCount == 4)
+                    return null;
                 //Ensure the word imported appears at the front of the description
                 productName = "imported " + productName.Replace("imported ", string.Empty);
             }

@@ -19,9 +19,14 @@ namespace SalesPrompter
             {
                 if (!sale.Add(input))
                 {
-                    Console.WriteLine($"Sales should be in the format of <qty> <description> at <unit price>\n" +
+                    Console.WriteLine($"\n" +
+                        $"Sales should be in the format of <quantity> <description> at <unit price>\n" +
                         $"For example: 2 books at 13.25 \n" +
-                        $"you typed '{input}'\n");
+                        $"please focous on:\n" +
+                        $"\t- type Quantity and unit price as number\n" +
+                        $"\t- include Description of the product\n" +
+                        $"\t- imported if it's imported item and don't forget product Name"
+                    );
                 }
                 input = GetInput();
             }

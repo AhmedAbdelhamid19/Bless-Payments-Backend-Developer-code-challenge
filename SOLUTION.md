@@ -41,3 +41,6 @@
 ## 12- adding Sale Level rounding instead of line level rounding as mentioned in the instructions and mention that in the receipt
 ## 13- apply principles like single reponsiplity and open for extension (SOLID) for readable, Maintainable, Reusable and Testable
     made in InputParser and SaleLine class
+## 14- handle the case when the whole name of the input doesn't contain product name and contain (quantity, price, 'at', 'imported')
+    in case if user typed by mistake "1 imported at 10" => here the product name wasn't set by user (he forgot that)
+    so we should handle this case unless it counted in the receipt as "1 imported imported: 10' which is wrong

@@ -1,5 +1,5 @@
 ## 1- Runtime error if user press enter (null reference exception)
-    handled by making constructor that intilize the the field of the Sale class.
+    handled by making constructor that intilize the the fields of the Sale class.
 ## 2- Runtime error (out of range exception)
     solving out of range exception in class InputParse in Join function, by replace 
     the fourth parameter (wordCount) with (wordCount - 3) so we only take the product name
@@ -24,7 +24,7 @@
     for example we should treat 'Imported' like 'imported', in case if user typed it by mistake
 ## 8- handle case when user click multiple enters 
     this can cause unexpected result, it's handled in InputParse class
-    eg. ['12', '','', '','at', '10'] should convert to ['12', '','', '','at', '10']
+    eg. ['12', '','', '','at', '10'] should convert to ['12','at', '10']
         which if it's not converted, empty strings will be treated as product, and it's  not product at all
 ## 9- calculated tax in better way
     in some cases tax could be wrong
